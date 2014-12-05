@@ -46,7 +46,7 @@ namespace SharpCompress.Archive
             string file = Path.GetFileName(entry.Key);
 
 
-            if (options.HasFlag(ExtractOptions.ExtractFullPath))
+            if (FlagUtility.HasFlag(options, ExtractOptions.ExtractFullPath))
             {
                 string folder = Path.GetDirectoryName(entry.Key);
                 string destdir = Path.Combine(destinationDirectory, folder);
@@ -75,7 +75,7 @@ namespace SharpCompress.Archive
             }
             FileMode fm = FileMode.Create;
 
-            if (!options.HasFlag(ExtractOptions.Overwrite))
+            if (!FlagUtility.HasFlag(options, ExtractOptions.Overwrite))
             {
                 fm = FileMode.CreateNew;
             }

@@ -22,7 +22,7 @@ namespace SharpCompress.Archive.Rar
         private static Options FixOptions(Options options)
         {
             //make sure we're closing streams with fileinfo
-            if (options.HasFlag(Options.KeepStreamsOpen))
+            if (FlagUtility.HasFlag(options, Options.KeepStreamsOpen))
             {
                 options = (Options) FlagUtility.SetFlag(options, Options.KeepStreamsOpen, false);
             }

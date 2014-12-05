@@ -29,7 +29,7 @@ namespace SharpCompress.Common.Rar.Headers
 
             uint highCompressedSize = 0;
             uint highUncompressedkSize = 0;
-            if (FileFlags.HasFlag(FileFlags.LARGE))
+            if (FlagUtility.HasFlag(FileFlags, FileFlags.LARGE))
             {
                 highCompressedSize = reader.ReadUInt32();
                 highUncompressedkSize = reader.ReadUInt32();
@@ -53,7 +53,7 @@ namespace SharpCompress.Common.Rar.Headers
             {
                 case HeaderType.FileHeader:
                     {
-                        if (FileFlags.HasFlag(FileFlags.UNICODE))
+                        if (FlagUtility.HasFlag(FileFlags, FileFlags.UNICODE))
                         {
                             int length = 0;
                             while (length < fileNameBytes.Length
@@ -81,7 +81,7 @@ namespace SharpCompress.Common.Rar.Headers
                 case HeaderType.NewSubHeader:
                     {
                         int datasize = HeaderSize - NEWLHD_SIZE - nameSize;
-                        if (FileFlags.HasFlag(FileFlags.SALT))
+                        if (FlagUtility.HasFlag(FileFlags, FileFlags.SALT))
                         {
                             datasize -= SALT_SIZE;
                         }
@@ -99,11 +99,11 @@ namespace SharpCompress.Common.Rar.Headers
                     break;
             }
 
-            if (FileFlags.HasFlag(FileFlags.SALT))
+            if (FlagUtility.HasFlag(FileFlags, FileFlags.SALT))
             {
                 Salt = reader.ReadBytes(SALT_SIZE);
             }
-            if (FileFlags.HasFlag(FileFlags.EXTTIME))
+            if (FlagUtility.HasFlag(FileFlags, FileFlags.EXTTIME))
             {
                 // verify that the end of the header hasn't been reached before reading the Extended Time.
                 //  some tools incorrectly omit Extended Time despite specifying FileFlags.EXTTIME, which most parsers tolerate.
