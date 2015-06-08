@@ -74,7 +74,7 @@ namespace SharpCompress.Archive
             where TEntry : IArchiveEntry
             where TVolume : IVolume
         {
-#if NET2
+#if NET2 || UNITY
             foreach (var path in Directory.GetFiles(filePath, searchPattern, searchOption))
 #else
             foreach (var path in Directory.EnumerateFiles(filePath, searchPattern, searchOption))

@@ -32,7 +32,7 @@ namespace SharpCompress.Archive.Rar
             FileInfoRarArchiveVolume part = new FileInfoRarArchiveVolume(fileInfo, password, options);
             yield return part;
 
-            if (!part.ArchiveHeader.ArchiveHeaderFlags.HasFlag(ArchiveFlags.VOLUME))
+            if (!FlagUtility.HasFlag(part.ArchiveHeader.ArchiveHeaderFlags, ArchiveFlags.VOLUME))
             {
                 yield break; //if file isn't volume then there is no reason to look
             }
@@ -54,7 +54,7 @@ namespace SharpCompress.Archive.Rar
             {
                 return null;
             }
-            bool oldNumbering = !ah.ArchiveHeaderFlags.HasFlag(ArchiveFlags.NEWNUMBERING)
+            bool oldNumbering = !FlagUtility.HasFlag(ah.ArchiveHeaderFlags, ArchiveFlags.NEWNUMBERING)
                                 || currentFilePart.MarkHeader.OldFormat;
             if (oldNumbering)
             {

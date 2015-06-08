@@ -88,7 +88,7 @@ namespace SharpCompress.Compressor.Rar
                 currentCount -= read;
                 totalRead += read;
                 if (((maxPosition - currentPosition) == 0)
-                    && filePartEnumerator.Current.FileHeader.FileFlags.HasFlag(FileFlags.SPLIT_AFTER))
+                    && FlagUtility.HasFlag(filePartEnumerator.Current.FileHeader.FileFlags, FileFlags.SPLIT_AFTER))
                 {
                     if (filePartEnumerator.Current.FileHeader.Salt != null)
                     {

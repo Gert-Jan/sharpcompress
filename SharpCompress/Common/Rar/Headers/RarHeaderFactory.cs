@@ -23,7 +23,7 @@ namespace SharpCompress.Common.Rar.Headers
         
         internal IEnumerable<RarHeader> ReadHeaders(Stream stream)
         {
-            if (Options.HasFlag(Options.LookForHeader))
+            if (FlagUtility.HasFlag(Options, Options.LookForHeader))
             {
                 stream = CheckSFX(stream);
             }
@@ -91,12 +91,12 @@ namespace SharpCompress.Common.Rar.Headers
             }
             catch (Exception e)
             {
-                if (!Options.HasFlag(Options.KeepStreamsOpen))
+                if (!FlagUtility.HasFlag(Options, Options.KeepStreamsOpen))
                 {
-#if NET2
+#if NET2 || UNITY
                     reader.Close();
 #else
-                    reader.Dispose();
+                    //reader.Dispose();
 #endif
                 }
                 throw new InvalidFormatException("Error trying to read rar signature.", e);
