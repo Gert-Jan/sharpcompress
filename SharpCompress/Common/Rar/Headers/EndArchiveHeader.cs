@@ -6,11 +6,11 @@ namespace SharpCompress.Common.Rar.Headers
     {
         protected override void ReadFromReader(MarkingBinaryReader reader)
         {
-            if (EndArchiveFlags.HasFlag(EndArchiveFlags.EARC_DATACRC))
+            if (FlagUtility.HasFlag(EndArchiveFlags, EndArchiveFlags.EARC_DATACRC))
             {
                 ArchiveCRC = reader.ReadInt32();
             }
-            if (EndArchiveFlags.HasFlag(EndArchiveFlags.EARC_VOLNUMBER))
+            if (FlagUtility.HasFlag(EndArchiveFlags, EndArchiveFlags.EARC_VOLNUMBER))
             {
                 VolumeNumber = reader.ReadInt16();
             }

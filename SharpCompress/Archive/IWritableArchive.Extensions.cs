@@ -4,18 +4,22 @@ using SharpCompress.Common;
 
 namespace SharpCompress.Archive
 {
-    public static class IWritableArchiveExtensions
+    public static class AbstractWritableArchiveExtensions
     {
-        public static void SaveTo(this IWritableArchive writableArchive,
+        public static void SaveTo<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                    Stream stream, CompressionType compressionType)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             writableArchive.SaveTo(stream, new CompressionInfo {Type = compressionType});
         }
 
 #if !PORTABLE && !NETFX_CORE
 
-        public static void AddEntry(this IWritableArchive writableArchive,
+        public static void AddEntry<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                      string entryPath, string filePath)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             var fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -26,14 +30,18 @@ namespace SharpCompress.Archive
                                      fileInfo.LastWriteTime);
         }
 
-        public static void SaveTo(this IWritableArchive writableArchive,
+        public static void SaveTo<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                    string filePath, CompressionType compressionType)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             writableArchive.SaveTo(new FileInfo(filePath), new CompressionInfo {Type = compressionType});
         }
 
-        public static void SaveTo(this IWritableArchive writableArchive,
+        public static void SaveTo<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                    FileInfo fileInfo, CompressionType compressionType)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             using (var stream = fileInfo.Open(FileMode.Create, FileAccess.Write))
             {
@@ -41,14 +49,18 @@ namespace SharpCompress.Archive
             }
         }
 
-        public static void SaveTo(this IWritableArchive writableArchive,
+        public static void SaveTo<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                    string filePath, CompressionInfo compressionInfo)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             writableArchive.SaveTo(new FileInfo(filePath), compressionInfo);
         }
 
-        public static void SaveTo(this IWritableArchive writableArchive,
+        public static void SaveTo<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive,
                                                    FileInfo fileInfo, CompressionInfo compressionInfo)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             using (var stream = fileInfo.Open(FileMode.Create, FileAccess.Write))
             {
@@ -56,11 +68,13 @@ namespace SharpCompress.Archive
             }
         }
 
-        public static void AddAllFromDirectory(
-            this IWritableArchive writableArchive,
+        public static void AddAllFromDirectory<TEntry, TVolume>(
+            this AbstractWritableArchive<TEntry, TVolume> writableArchive,
             string filePath, string searchPattern = "*.*", SearchOption searchOption = SearchOption.AllDirectories)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
-#if NET2
+#if NET2 || UNITY
             foreach (var path in Directory.GetFiles(filePath, searchPattern, searchOption))
 #else
             foreach (var path in Directory.EnumerateFiles(filePath, searchPattern, searchOption))
@@ -71,7 +85,9 @@ namespace SharpCompress.Archive
                                          fileInfo.LastWriteTime);
             }
         }
-        public static IArchiveEntry AddEntry(this IWritableArchive writableArchive, string key, FileInfo fileInfo)
+        public static TEntry AddEntry<TEntry, TVolume>(this AbstractWritableArchive<TEntry, TVolume> writableArchive, string key, FileInfo fileInfo)
+            where TEntry : IArchiveEntry
+            where TVolume : IVolume
         {
             if (!fileInfo.Exists)
             {

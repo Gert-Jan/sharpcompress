@@ -48,7 +48,7 @@ namespace SharpCompress.Archive.Rar
             {
                 CheckIncomplete();
                 return parts.Select(fp => fp.FileHeader)
-                    .Single(fh => !fh.FileFlags.HasFlag(FileFlags.SPLIT_AFTER)).FileCRC;
+                    .Single(fh => !FlagUtility.HasFlag(fh.FileFlags, FileFlags.SPLIT_AFTER)).FileCRC;
             }
         }
 
@@ -79,7 +79,7 @@ namespace SharpCompress.Archive.Rar
 
         public bool IsComplete
         {
-            get { return parts.Select(fp => fp.FileHeader).Any(fh => !fh.FileFlags.HasFlag(FileFlags.SPLIT_AFTER)); }
+            get { return parts.Select(fp => fp.FileHeader).Any(fh => !FlagUtility.HasFlag(fh.FileFlags, FileFlags.SPLIT_AFTER)); }
         }
 
         private void CheckIncomplete()

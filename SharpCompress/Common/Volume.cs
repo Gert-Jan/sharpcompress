@@ -41,7 +41,7 @@ namespace SharpCompress.Common
 
         public void Dispose()
         {
-            if (!Options.HasFlag(Options.KeepStreamsOpen) && !disposed)
+            if (!FlagUtility.HasFlag(Options, Options.KeepStreamsOpen) && !disposed)
             {
                 actualStream.Dispose();
                 disposed = true;
