@@ -680,7 +680,7 @@ namespace SharpCompress.Compressor.Deflate
                     //int val = value;
                     //      bi_buf |= (val << bi_valid);
 
-                    bi_buf |= (short) ((value << bi_valid) & 0xffff);
+                    bi_buf = (short) (bi_buf | (short) ((value << bi_valid) & 0xffff));
                     //put_short(bi_buf);
                     pending[pendingCount++] = (byte) bi_buf;
                     pending[pendingCount++] = (byte) (bi_buf >> 8);
@@ -692,7 +692,7 @@ namespace SharpCompress.Compressor.Deflate
                 else
                 {
                     //      bi_buf |= (value) << bi_valid;
-                    bi_buf |= (short) ((value << bi_valid) & 0xffff);
+                    bi_buf = (short)(bi_buf | (short)((value << bi_valid) & 0xffff));
                     bi_valid += len;
                 }
             }
