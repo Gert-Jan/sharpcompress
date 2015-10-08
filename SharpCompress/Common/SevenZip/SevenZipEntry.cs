@@ -17,7 +17,7 @@ namespace SharpCompress.Common.SevenZip
             get { return FilePart.CompressionType; }
         }
 
-        public override uint Crc
+        public override long Crc
         {
             get { return FilePart.Header.Crc ?? 0; }
         }
@@ -39,22 +39,22 @@ namespace SharpCompress.Common.SevenZip
 
         public override DateTime? LastModifiedTime
         {
-            get { throw new NotImplementedException(); }
+            get { return FilePart.Header.MTime; }
         }
 
         public override DateTime? CreatedTime
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         public override DateTime? LastAccessedTime
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         public override DateTime? ArchivedTime
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         public override bool IsEncrypted
@@ -70,6 +70,11 @@ namespace SharpCompress.Common.SevenZip
         public override bool IsSplit
         {
             get { return false; }
+        }
+
+        public override int? Attrib
+        {
+            get { return (int) FilePart.Header.Attrib; }
         }
 
         internal override IEnumerable<FilePart> Parts

@@ -13,7 +13,6 @@ namespace SharpCompress.Common.Zip.Headers
             Extra = new List<ExtraData>();
         }
 
-
         internal bool IsDirectory
         {
             get { return Name.EndsWith("/"); }
@@ -25,6 +24,7 @@ namespace SharpCompress.Common.Zip.Headers
             {
                 return Encoding.UTF8.GetString(str, 0, str.Length);
             }
+
             return ArchiveEncoding.Default.GetString(str, 0, str.Length);
         }
 
@@ -66,22 +66,19 @@ namespace SharpCompress.Common.Zip.Headers
 
         protected void LoadExtra(byte[] extra)
         {
-            for (int i = 0; i < extra.Length;)
+            for (int i = 0; i < extra.Length-4;)
             {
                 ExtraDataType type = (ExtraDataType) BitConverter.ToUInt16(extra, i);
                 if (!Enum.IsDefined(typeof (ExtraDataType), type))
                 {
-                    return;
+                    type = ExtraDataType.NotImplementedExtraData;
                 }
+
                 ushort length = BitConverter.ToUInt16(extra, i + 2);
                 byte[] data = new byte[length];
                 Buffer.BlockCopy(extra, i + 4, data, 0, length);
-                Extra.Add(new ExtraData
-                              {
-                                  Type = type,
-                                  Length = length,
-                                  DataBytes = data
-                              });
+                Extra.Add(LocalEntryHeaderExtraFactory.Create(type,length,data));
+
                 i += length + 4;
             }
         }

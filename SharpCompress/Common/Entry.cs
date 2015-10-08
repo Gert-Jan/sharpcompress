@@ -8,7 +8,7 @@ namespace SharpCompress.Common
         /// <summary>
         /// The File's 32 bit CRC Hash
         /// </summary>
-        public abstract uint Crc { get; }
+        public abstract long Crc { get; }
 
         /// <summary>
         /// The string key of the file internal to the Archive.
@@ -46,7 +46,7 @@ namespace SharpCompress.Common
         public abstract DateTime? LastAccessedTime { get; }
 
         /// <summary>
-        /// The entry time whend archived, if recorded
+        /// The entry time when archived, if recorded
         /// </summary>
         public abstract DateTime? ArchivedTime { get; }
 
@@ -70,7 +70,16 @@ namespace SharpCompress.Common
 
         internal virtual void Close()
         {
-            
+
         }
+
+        /// <summary>
+        /// Entry file attribute.
+        /// </summary>
+        public virtual int? Attrib
+        {
+            get { throw new NotImplementedException(); }
+        }
+
     }
 }

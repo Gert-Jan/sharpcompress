@@ -188,6 +188,15 @@ namespace SharpCompress.Archive.SevenZip
             get { return Entries.Where(x => !x.IsDirectory).GroupBy(x => x.FilePart.Folder).Count() > 1; }
         }
 
+        public override long TotalSize
+        {
+            get
+            {
+                int i = Entries.Count;
+                return database.PackSizes.Aggregate(0L, (total, packSize) => total + packSize);
+            }
+        }
+
         private class SevenZipReader : AbstractReader<SevenZipEntry, SevenZipVolume>
         {
             private readonly SevenZipArchive archive;
@@ -236,7 +245,7 @@ namespace SharpCompress.Archive.SevenZip
 
             protected override EntryStream GetEntryStream()
             {
-                return new EntryStream(new ReadOnlySubStream(currentStream, currentItem.Size));
+                return CreateEntryStream(new ReadOnlySubStream(currentStream, currentItem.Size));
             }
         }
     }

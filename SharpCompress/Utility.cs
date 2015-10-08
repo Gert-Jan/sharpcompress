@@ -199,21 +199,15 @@ namespace SharpCompress
         /// </param>
         /// <param name="value">the value to write
         /// </param>
-#if PORTABLE || NETFX_CORE
         public static void WriteLittleEndian(byte[] array, int pos, short value)
         {
             byte[] newBytes = BitConverter.GetBytes(value);
+
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(newBytes);
+
             Array.Copy(newBytes, 0, array, pos, newBytes.Length);
         }
-#else
-        public static unsafe void WriteLittleEndian(byte[] array, int pos, short value)
-        {
-            fixed (byte* numRef = &(array[pos]))
-            {
-                *((short*)numRef) = value;
-            }
-        }
-#endif
 
         /// <summary> Increment a short value at the specified position by the specified amount
         /// (little endian).
@@ -241,21 +235,15 @@ namespace SharpCompress
         /// </param>
         /// <param name="value">the value to write
         /// </param>
-#if PORTABLE || NETFX_CORE
         public static void WriteLittleEndian(byte[] array, int pos, int value)
         {
             byte[] newBytes = BitConverter.GetBytes(value);
+
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(newBytes);
+
             Array.Copy(newBytes, 0, array, pos, newBytes.Length);
         }
-#else
-        public static unsafe void WriteLittleEndian(byte[] array, int pos, int value)
-        {
-            fixed (byte* numRef = &(array[pos]))
-            {
-                *((int*)numRef) = value;
-            }
-        }
-#endif
 
         public static void Initialize<T>(this T[] array, Func<T> func)
         {
@@ -372,7 +360,7 @@ namespace SharpCompress
             DateTime dt;
             try
             {
-                dt = new DateTime(year, month, day, hour, minute, second);
+                dt = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Local);
             }
             catch
             {
@@ -387,10 +375,13 @@ namespace SharpCompress
             {
                 return 0;
             }
+
+            var localDateTime = dateTime.Value.ToLocalTime();
+
             return (uint)(
-                              (dateTime.Value.Second / 2) | (dateTime.Value.Minute << 5) | (dateTime.Value.Hour << 11) |
-                              (dateTime.Value.Day << 16) | (dateTime.Value.Month << 21) |
-                              ((dateTime.Value.Year - 1980) << 25));
+                              (localDateTime.Second / 2) | (localDateTime.Minute << 5) | (localDateTime.Hour << 11) |
+                              (localDateTime.Day << 16) | (localDateTime.Month << 21) |
+                              ((localDateTime.Year - 1980) << 25));
         }
 
 

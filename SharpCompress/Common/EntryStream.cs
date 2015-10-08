@@ -1,16 +1,19 @@
 ﻿using System;
 using System.IO;
+using SharpCompress.Reader;
 
 namespace SharpCompress.Common
 {
     public class EntryStream : Stream
     {
+        public IReader Reader { get; private set; }
         private Stream stream;
         private bool completed;
         private bool isDisposed;
 
-        internal EntryStream(Stream stream)
+        internal EntryStream(IReader reader, Stream stream)
         {
+            this.Reader = reader;
             this.stream = stream;
         }
 
@@ -28,10 +31,9 @@ namespace SharpCompress.Common
 
         protected override void Dispose(bool disposing)
         {
-            if (!completed)
+            if (!(completed || Reader.Cancelled))
             {
-                throw new InvalidOperationException(
-                    "EntryStream has not been fully consumed.  Read the entire stream or use SkipEntry.");
+                SkipEntry();
             }
             if (isDisposed)
             {
@@ -59,18 +61,18 @@ namespace SharpCompress.Common
 
         public override void Flush()
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override long Length
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public override long Position
         {
-            get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -85,17 +87,17 @@ namespace SharpCompress.Common
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void SetLength(long value)
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

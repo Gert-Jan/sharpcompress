@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,15 +9,15 @@ using SharpCompress.Reader;
 
 namespace SharpCompress.Test
 {
+    [TestClass]
     public class TestBase
     {
-        protected const string TEST_BASE_PATH = @"Z:\Git\sharpcompress";
-        protected static readonly string TEST_ARCHIVES_PATH = Path.Combine(TEST_BASE_PATH, "TestArchives", "Archives");
-        protected static readonly string ORIGINAL_FILES_PATH = Path.Combine(TEST_BASE_PATH, "TestArchives", "Original");
-        protected static readonly string MISC_TEST_FILES_PATH = Path.Combine(TEST_BASE_PATH, "TestArchives", "MiscTest");
-        protected static readonly string SCRATCH_FILES_PATH = Path.Combine(TEST_BASE_PATH, "TestArchives", "Scratch");
-        protected static readonly string SCRATCH2_FILES_PATH = Path.Combine(TEST_BASE_PATH, "TestArchives", "Scratch2");
-
+        protected static string SOLUTION_BASE_PATH=null;
+        protected static string TEST_ARCHIVES_PATH;
+        protected static string ORIGINAL_FILES_PATH;
+        protected static string MISC_TEST_FILES_PATH;
+        protected static string SCRATCH_FILES_PATH;
+        protected static string SCRATCH2_FILES_PATH;
         protected static IEnumerable<string> GetRarArchives()
         {
             yield return Path.Combine(TEST_ARCHIVES_PATH, "Rar.none.rar");
@@ -77,6 +78,21 @@ namespace SharpCompress.Test
             }
         }
 
+        /// <summary>
+        /// Verifies the files also check modified time and attributes.
+        /// </summary>
+        public void VerifyFilesEx()
+        {
+            if (UseExtensionInsteadOfNameToVerify)
+            {
+                VerifyFilesByExtensionEx();
+            }
+            else
+            {
+                VerifyFilesByNameEx();
+            }
+        }
+
         protected void VerifyFilesByName()
         {
             var extracted =
@@ -93,6 +109,52 @@ namespace SharpCompress.Test
                 Assert.IsTrue(extracted.Contains(orig.Key));
 
                 CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
+            }
+        }
+
+        /// <summary>
+        /// Verifies the files by name also check modified time and attributes.
+        /// </summary>
+        protected void VerifyFilesByNameEx()
+        {
+            var extracted =
+                Directory.EnumerateFiles(SCRATCH_FILES_PATH, "*.*", SearchOption.AllDirectories)
+                .ToLookup(path => path.Substring(SCRATCH_FILES_PATH.Length));
+            var original =
+                Directory.EnumerateFiles(ORIGINAL_FILES_PATH, "*.*", SearchOption.AllDirectories)
+                .ToLookup(path => path.Substring(ORIGINAL_FILES_PATH.Length));
+
+            Assert.AreEqual(extracted.Count, original.Count);
+
+            foreach (var orig in original)
+            {
+                Assert.IsTrue(extracted.Contains(orig.Key));
+
+                CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
+                CompareFilesByTimeAndAttribut(orig.Single(), extracted[orig.Key].Single());
+            }
+        }
+
+        /// <summary>
+        /// Verifies the files by extension also check modified time and attributes.
+        /// </summary>
+        protected void VerifyFilesByExtensionEx()
+        {
+            var extracted =
+                Directory.EnumerateFiles(SCRATCH_FILES_PATH, "*.*", SearchOption.AllDirectories)
+                .ToLookup(path => Path.GetExtension(path));
+            var original =
+                Directory.EnumerateFiles(ORIGINAL_FILES_PATH, "*.*", SearchOption.AllDirectories)
+                .ToLookup(path => Path.GetExtension(path));
+
+            Assert.AreEqual(extracted.Count, original.Count);
+
+            foreach (var orig in original)
+            {
+                Assert.IsTrue(extracted.Contains(orig.Key));
+
+                CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
+                CompareFilesByTimeAndAttribut(orig.Single(), extracted[orig.Key].Single());
             }
         }
 
@@ -136,6 +198,14 @@ namespace SharpCompress.Test
             }
         }
 
+        protected void CompareFilesByTimeAndAttribut(string file1, string file2)
+        {
+            FileInfo fi1 = new FileInfo(file1);
+            FileInfo fi2 = new FileInfo(file2);
+            Assert.AreEqual(fi1.LastWriteTime, fi2.LastWriteTime);
+            Assert.AreEqual(fi1.Attributes, fi2.Attributes);
+        }
+
         protected void CompareArchivesByPath(string file1, string file2)
         {
             using (var archive1 = ReaderFactory.Open(File.OpenRead(file1), Options.None))
@@ -152,16 +222,15 @@ namespace SharpCompress.Test
 
         private static readonly object testLock = new object();
 
-        [TestInitialize]
-        public void TestSetup()
+        [AssemblyInitialize]
+        public static void InitializePaths(TestContext ctx)
         {
-            Monitor.Enter(testLock);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            Monitor.Exit(testLock);
+            SOLUTION_BASE_PATH = Path.GetDirectoryName(Path.GetDirectoryName(ctx.TestDir));
+            TEST_ARCHIVES_PATH = Path.Combine(SOLUTION_BASE_PATH, "TestArchives", "Archives");
+            ORIGINAL_FILES_PATH = Path.Combine(SOLUTION_BASE_PATH, "TestArchives", "Original");
+            MISC_TEST_FILES_PATH = Path.Combine(SOLUTION_BASE_PATH, "TestArchives", "MiscTest");
+            SCRATCH_FILES_PATH = Path.Combine(SOLUTION_BASE_PATH, "TestArchives", "Scratch");
+            SCRATCH2_FILES_PATH = Path.Combine(SOLUTION_BASE_PATH, "TestArchives", "Scratch2");
         }
     }
 }

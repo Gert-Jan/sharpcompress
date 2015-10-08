@@ -6,6 +6,9 @@ namespace SharpCompress.Reader
 {
     public interface IReader : IDisposable
     {
+        event EventHandler<ReaderExtractionEventArgs<IEntry>> EntryExtractionBegin;
+        event EventHandler<ReaderExtractionEventArgs<IEntry>> EntryExtractionEnd;
+
         event EventHandler<CompressedBytesReadEventArgs> CompressedBytesRead;
         event EventHandler<FilePartExtractionBeginEventArgs> FilePartExtractionBegin;
 
@@ -18,6 +21,9 @@ namespace SharpCompress.Reader
         /// </summary>
         /// <param name="writableStream"></param>
         void WriteEntryTo(Stream writableStream);
+
+        bool Cancelled { get; }
+        void Cancel();
 
         /// <summary>
         /// Moves to the next entry by reading more data from the underlying stream.  This skips if data has not been read.

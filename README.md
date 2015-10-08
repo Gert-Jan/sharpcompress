@@ -3,7 +3,7 @@ SharpCompress
 
 Github mirror of http://sharpcompress.codeplex.com
 
-SharpCompress is a compression library for .NET/Mono/Silverlight/WP7 that can unrar, un7zip, unzip, untar unbzip2 and ungzip with forward-only reading and file random access APIs. Write support for zip/tar/bzip2/gzip is implemented.
+SharpCompress is a compression library for .NET/Mono/Silverlight/WP7 that can unrar, un7zip, unzip, untar unbzip2 and ungzip with forward-only reading and file random access APIs. Write support for zip/tar/bzip2/gzip are implemented.
 
 The major feature is support for non-seekable streams so large files can be processed on the fly (i.e. download stream). 
 
@@ -20,6 +20,18 @@ TODOs (always lots):
 * 7Zip writing
 * Zip64
 * Multi-volume Zip support.
+
+Version 0.11.1:
+==============
+- Added Cancel on IReader
+- Removed .NET 2.0 support and LinqBridge dependency
+
+Version 0.11:
+==============
+- Been over a year, contains mainly fixes from contributors!  
+- Possible breaking change: ArchiveEncoding is UTF8 by default now.
+- TAR supports writing long names using longlink
+- RAR Protect Header added
 
 Version 0.10.3:
 ==============
