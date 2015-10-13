@@ -84,13 +84,15 @@ namespace SharpCompress.Archive
                 entry.WriteTo(fs);
             }
 
-            if (options.HasFlag(ExtractOptions.PreserveFileTime) || options.HasFlag(ExtractOptions.PreserveAttributes))
+            bool PreserveFileTime = FlagUtility.HasFlag<ExtractOptions>(options, ExtractOptions.PreserveFileTime);
+            bool PreserveAttributes = FlagUtility.HasFlag<ExtractOptions>(options, ExtractOptions.PreserveAttributes);
+            if (PreserveFileTime || PreserveAttributes)
             {
                 // update file time to original packed time
                 FileInfo nf = new FileInfo(destinationFileName);
                 if (nf.Exists)
                 {
-                    if (options.HasFlag(ExtractOptions.PreserveFileTime))
+                    if (PreserveFileTime)
                     {
                         if (entry.CreatedTime.HasValue)
                         {
@@ -108,7 +110,7 @@ namespace SharpCompress.Archive
                         }
                     }
 
-                    if (options.HasFlag(ExtractOptions.PreserveAttributes))
+                    if (PreserveAttributes)
                     {
                         if (entry.Attrib.HasValue)
                         {
