@@ -50,7 +50,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Full\</OutputPath>
+    <OutputPath>..\..\..\..\SpeedrunnersUnity\Assets\Dlls\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DISABLE_TRACE;UNITY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,7 +64,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\Full\</OutputPath>
+    <OutputPath>..\..\..\..\SpeedrunnersUnity\Assets\Dlls\</OutputPath>
     <DefineConstants>TRACE;UNITY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
